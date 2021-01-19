@@ -6,6 +6,8 @@ import (
 	"errors"
 	"github.com/jackc/pgx/v4"
 	"se03.com/pkg/models"
+	"strconv"
+	"time"
 )
 
 type SnippetModel struct {
@@ -14,11 +16,14 @@ type SnippetModel struct {
 }
 
 func (m *SnippetModel) Insert(title, content, expires string) (int, error) {
-	stmt := "INSERT INTO snippets (title, content, created, expires) VALUES ( $1,$2, $3 + NOW() ,NOW() + INTERVAL '365 DAY') RETURNING id"
+
+	stmt := "INSERT INTO snippets (title, content, created, expires) VALUES ( $1,$2, $3 ,$4) RETURNING id"
+	days, _ := strconv.Atoi(expires)
+	created := time.Now()
 	id := 0
-	err := m.DB.QueryRow(m.Ctx, stmt, title, content, expires).Scan(&id)
+	err := m.DB.QueryRow(context.Background(), stmt, title, content, created, time.Now().AddDate(0, 0, days)).Scan(&id)
 	if err != nil {
-		return 0, err
+		return 0, nil
 	}
 	return id, nil
 }
