@@ -29,7 +29,7 @@ func main() {
 	//postgres://postgres:alimzhan125@localhost:5432/snippetbox
 	flag.Parse()
 	ctx := context.Background()
-	connStr := "postgres://postgres:alimzhan125@localhost:5432/snippetbox"
+	connStr := "postgres://postgres:alimzhan125@host.docker.internal:5432/snippetbox"
 	dsn := flag.String("dsn", connStr, "PostgreSQL data source name")
 	db, err := openDB(*dsn, ctx)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
